@@ -28,14 +28,13 @@ async def get_repo_data(username, repo_name):
         return None
 
 
-@app.route("/list-files/<string:owner>/<string:repo>/<string:path>", methods=['GET'])
-async def get_file_data(owner, repo, path):
+@app.get("/file/<string:owner>/<string:repo>/<string:file_path>")
+async def get_file_data(owner, repo, file_path):
     # Construct the API URL
-    url = f'https://api.github.com/repos/{owner}/{repo}/contents/{path}'
+    url = f'https://api.github.com/repos/{owner}/{repo}/contents/{file_path}'
 
     # Make the GET request to the GitHub API
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
+    response = requests.get(url)
 
     # Check if the request was successful
     if response.status_code == 200:
@@ -43,6 +42,7 @@ async def get_file_data(owner, repo, path):
         file_data = response.json()
 
         # Decode the file content (which is base64 encoded)
+        import base64
         file_content = base64.b64decode(file_data['content']).decode('utf-8')
 
         # Return the file content as a JSON response
