@@ -1,133 +1,130 @@
-openapi: 3.0.1
+---
+components:
+  schemas:
+    getFileResponse:
+      properties:
+        fileData:
+          description: File data.
+          type: object
+      type: object
+    getRepoResponse:
+      properties:
+        repoData:
+          description: Repo data.
+          type: object
+      type: object
+    listFilesResponse:
+      properties:
+        files:
+          description: List of file names.
+          items:
+            type: string
+          type: array
+      type: object
 info:
-  title: GitHub Plugin
   description: A plugin that allows the user to get data from GitHub using ChatGPT. If you do not know the user's username, ask them first before making queries to the plugin. Otherwise, use the username "global".
-  version: 'v1'
-servers:
-  - url: http://localhost:5003
+  title: GitHub Plugin
+  version: v1
+openapi: 3.0.1
 paths:
-  /repo/{username}/{repo_name}:
-    get:
-      operationId: getRepo
-      summary: Get repo data from GitHub
-      parameters:
-        - in: path
-          name: repo_name
-          schema:
-            type: string
-          required: true
-          description: The name of the repo.
-        - in: path
-          name: username
-          schema:
-            type: string
-          required: true
-          description: The name of the user.
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/getRepoResponse'
   /file/{username}/{repo_name}/{file_name}:
     get:
       operationId: getFile
-      summary: Get file data from GitHub
       parameters:
-        - in: path
+        - description: The name of the repo.
+          in: path
           name: repo_name
+          required: true
           schema:
             type: string
-          required: true
-          description: The name of the repo.
-        - in: path
+        - description: The name of the user.
+          in: path
           name: username
+          required: true
           schema:
             type: string
-          required: true
-          description: The name of the user.
-        - in: path
+        - description: The name of the file.
+          in: path
           name: file_name
+          required: true
           schema:
             type: string
-          required: true
-          description: The name of the file.
       responses:
         '200':
-          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getFileResponse'
-    # post:
-    #   operationId: addTodo
-    #   summary: Add a todo to the list
-    #   parameters:
-    #   - in: path
-    #     name: username
-    #     schema:
-    #         type: string
-    #     required: true
-    #     description: The name of the user.
-    #   requestBody:
-    #     required: true
-    #     content:
-    #       application/json:
-    #         schema:
-    #           $ref: '#/components/schemas/addTodoRequest'
-    #   responses:
-    #     "200":
-    #       description: OK
-    # delete:
-    #   operationId: deleteTodo
-    #   summary: Delete a todo from the list
-    #   parameters:
-    #   - in: path
-    #     name: username
-    #     schema:
-    #         type: string
-    #     required: true
-    #     description: The name of the user.
-    #   requestBody:
-    #     required: true
-    #     content:
-    #       application/json:
-    #         schema:
-    #           $ref: '#/components/schemas/deleteTodoRequest'
-    #   responses:
-    #     "200":
-    #       description: OK
-
-components:
-  schemas:
-    getRepoResponse:
-      type: object
-      properties:
-        repo:
-          type: json
-          description: Repo data.
-    getFileResponse:
-      type: object
-      properties:
-        repo:
-          type: json
-          description: File data.
-    # addTodoRequest:
-    #   type: object
-    #   required:
-    #   - todo
-    #   properties:
-    #     todo:
-    #       type: string
-    #       description: The todo to add to the list.
-    #       required: true
-    # deleteTodoRequest:
-    #   type: object
-    #   required:
-    #   - todo_idx
-    #   properties:
-    #     todo_idx:
-    #       type: integer
-    #       description: The index of the todo to delete.
-    #       required: true
+                properties:
+                  fileData:
+                    description: File data.
+                    type: object
+                type: object
+          description: OK
+      summary: Get file data from GitHub
+  /list-files/{owner}/{repo}/{path}:
+    get:
+      operationId: listFiles
+      parameters:
+        - description: The name of the repo owner.
+          in: path
+          name: owner
+          required: true
+          schema:
+            type: string
+        - description: The name of the repo.
+          in: path
+          name: repo
+          required: true
+          schema:
+            type: string
+        - default: ''
+          description: The path to the file.
+          in: path
+          name: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  files:
+                    description: List of file names.
+                    items:
+                      type: string
+                    type: array
+                type: object
+          description: OK
+      summary: List files in a repo
+  /repo/{username}/{repo_name}:
+    get:
+      operationId: getRepo
+      parameters:
+        - description: The name of the repo.
+          in: path
+          name: repo_name
+          required: true
+          schema:
+            type: string
+        - description: The name of the user.
+          in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  repoData:
+                    description: Repo data.
+                    type: object
+                type: object
+          description: OK
+      summary: Get repo data from GitHub
+servers:
+  - url: http://localhost:5003
