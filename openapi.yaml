@@ -30,6 +30,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/getRepoResponse'
+  /file/{username}/{repo_name}/{file_name}:
+    get:
+      operationId: getFile
+      summary: Get file data from GitHub
+      parameters:
+        - in: path
+          name: repo_name
+          schema:
+            type: string
+          required: true
+          description: The name of the repo.
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+          description: The name of the user.
+        - in: path
+          name: file_name
+          schema:
+            type: string
+          required: true
+          description: The name of the file.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getFileResponse'
     # post:
     #   operationId: addTodo
     #   summary: Add a todo to the list
@@ -77,6 +107,12 @@ components:
         repo:
           type: json
           description: Repo data.
+    getFileResponse:
+      type: object
+      properties:
+        repo:
+          type: json
+          description: File data.
     # addTodoRequest:
     #   type: object
     #   required:

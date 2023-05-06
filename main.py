@@ -1,8 +1,7 @@
-import json
 import requests
 import quart
 import quart_cors
-from quart import request
+from quart import request, jsonify
 
 app = quart_cors.cors(quart.Quart(__name__),
                       allow_origin="https://chat.openai.com")
@@ -36,6 +35,31 @@ async def get_repo_data(username, repo_name):
         # Handle unsuccessful requests
         print(f"An error occurred: {response.status_code}")
         return None
+
+
+@app.get("/file/<string:owner>/<string:repo>/<string:file_path>")
+async def get_file_data(owner, repo, file_path):
+    # Construct the API URL
+    url = f'https://api.github.com/repos/{owner}/{repo}/contents/{file_path}'
+
+    # Make the GET request to the GitHub API
+    response = requests.get(url)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Parse the JSON response
+        file_data = response.json()
+
+        # Decode the file content (which is base64 encoded)
+        import base64
+        file_content = base64.b64decode(file_data['content']).decode('utf-8')
+
+        # Return the file content as a JSON response
+        return jsonify({'content': file_content})
+    else:
+        # Return an error response with the status code
+        return jsonify({'error': f'Error: {response.status_code}'}), response.status_code
+
 
 # @app.delete("/todos/<string:username>")
 # async def delete_todo(username):
