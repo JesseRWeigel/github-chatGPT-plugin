@@ -1,18 +1,25 @@
 {
   "schema_version": "v1",
-  "name_for_human": "GitHub Plugin (no auth)",
+  "name_for_human": "GitHub Plugin",
   "name_for_model": "github",
   "description_for_human": "Plugin for getting data about GitHub repositories",
   "description_for_model": "Plugin for getting data about GitHub repositories",
   "auth": {
-    "type": "none"
+    "type": "oauth",
+    "client_url": "https://github.com/login/oauth/authorize",
+    "scope": "repo",
+    "authorization_url": "https://github.com/login/oauth/access_token",
+    "authorization_content_type": "application/json",
+    "verification_tokens": {
+      "openai": "Replace_this_string_with_the_verification_token_generated_in_the_ChatGPT_UI"
+    }
   },
   "api": {
     "type": "openapi",
     "url": "http://localhost:5003/openapi.yaml",
-    "is_user_authenticated": false
+    "is_user_authenticated": true
   },
   "logo_url": "http://localhost:5003/logo.png",
-  "contact_email": "legal@example.com",
+  "contact_email": "jesseweigel@gmail.com",
   "legal_info_url": "http://example.com/legal"
 }
